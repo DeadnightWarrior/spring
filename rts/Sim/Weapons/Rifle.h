@@ -11,10 +11,8 @@ class CRifle: public CWeapon
 public:
 	CRifle(CUnit* owner, const WeaponDef* def);
 
-	void Update();
-
 private:
-	void FireImpl(bool scriptCall);
+	void FireImpl(const bool scriptCall) override final;
 };
 
 #endif /* RIFLE_H */

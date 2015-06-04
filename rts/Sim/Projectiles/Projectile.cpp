@@ -6,6 +6,7 @@
 #include "Rendering/GL/VertexArray.h"
 #include "Sim/Projectiles/ProjectileHandler.h"
 #include "Sim/Misc/QuadField.h"
+#include "Sim/Misc/TeamHandler.h"
 #include "Sim/Units/Unit.h"
 #include "Sim/Units/UnitHandler.h"
 #include "System/Matrix44f.h"
@@ -37,15 +38,14 @@ CR_REG_METADATA(CProjectile,
 
 	CR_MEMBER(ownerID),
 	CR_MEMBER(teamID),
+	CR_MEMBER(allyteamID),
 	CR_MEMBER(cegID),
 
 	CR_MEMBER(projectileType),
 	CR_MEMBER(collisionFlags),
 
-	CR_MEMBER(qfCellData)
+	CR_MEMBER(quads)
 ))
-
-CR_BIND(CProjectile::QuadFieldCellData, )
 
 
 
@@ -71,9 +71,11 @@ CProjectile::CProjectile()
 	, drawSorted(true)
 
 	, mygravity(mapInfo? mapInfo->map.gravity: 0.0f)
+	, sortDist(0.0f)
 
 	, ownerID(-1u)
 	, teamID(-1u)
+	, allyteamID(-1)
 	, cegID(-1u)
 
 	, projectileType(-1u)
@@ -109,6 +111,7 @@ CProjectile::CProjectile(
 
 	, ownerID(-1u)
 	, teamID(-1u)
+	, allyteamID(-1)
 	, cegID(-1u)
 
 	, projectileType(-1u)
@@ -137,6 +140,7 @@ void CProjectile::Init(const CUnit* owner, const float3& offset)
 		// must be set before the AddProjectile call
 		ownerID = owner->id;
 		teamID = owner->team;
+		allyteamID =  teamHandler->IsValidTeam(teamID)? teamHandler->AllyTeam(teamID): -1;
 	}
 	if (!hitscan) {
 		SetPosition(pos + offset);

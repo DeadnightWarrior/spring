@@ -318,6 +318,7 @@ CGame::CGame(const std::string& mapName, const std::string& modName, ILoadSaveHa
 	// clear left-over receivers in case we reloaded
 	commandConsole.ResetState();
 
+	wind.ResetState();
 
 	modInfo.ResetState();
 	modInfo.Init(modName.c_str());
@@ -522,7 +523,7 @@ void CGame::PreLoadSimulation()
 
 	loadscreen->SetLoadMessage("Creating QuadField & CEGs");
 	moveDefHandler = new MoveDefHandler(defsParser);
-	quadField = new CQuadField((mapDims.mapx * SQUARE_SIZE) / CQuadField::BASE_QUAD_SIZE, (mapDims.mapy * SQUARE_SIZE) / CQuadField::BASE_QUAD_SIZE);
+	quadField = new CQuadField(int2(mapDims.mapx, mapDims.mapy), CQuadField::BASE_QUAD_SIZE);
 	damageArrayHandler = new CDamageArrayHandler(defsParser);
 	explGenHandler = new CExplosionGeneratorHandler();
 }
@@ -1098,7 +1099,7 @@ bool CGame::UpdateUnsynced(const spring_time currentTime)
 	}
 
 	if ((currentTime - frameStartTime).toMilliSecsf() >= 1000.0f) {
-		globalRendering->FPS = (numDrawFrames * 1000.0f) / (currentTime - frameStartTime).toMilliSecsf();
+		globalRendering->FPS = (numDrawFrames * 1000.0f) / std::max(0.01f, (currentTime - frameStartTime).toMilliSecsf());
 
 		// update FPS counter once every second
 		frameStartTime = currentTime;
@@ -1145,7 +1146,7 @@ bool CGame::UpdateUnsynced(const spring_time currentTime)
 		}
 
 		// TODO call only when camera changed
-		sound->UpdateListener(camera->GetPos(), camera->GetDir(), camera->GetUp(), unsyncedUpdateDeltaTime);
+		sound->UpdateListener(camera->GetPos(), camera->GetDir(), camera->GetUp());
 	}
 
 	SetDrawMode(gameNormalDraw); //TODO move to ::Draw()?

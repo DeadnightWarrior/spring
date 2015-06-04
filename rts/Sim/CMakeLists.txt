@@ -159,19 +159,19 @@ add_library(engineSim STATIC
 		"${CMAKE_CURRENT_SOURCE_DIR}/Weapons/WeaponDef.cpp"
 		"${CMAKE_CURRENT_SOURCE_DIR}/Weapons/WeaponDefHandler.cpp"
 		"${CMAKE_CURRENT_SOURCE_DIR}/Weapons/WeaponLoader.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/Weapons/WeaponTarget.cpp"
 	)
 
 include_directories(${GLEW_INCLUDE_DIR})
 
-get_property(SPRING_SIM_LIBRARIES TARGET engineSim PROPERTY LOCATION)
 if( CMAKE_COMPILER_IS_GNUCXX)
 	# FIXME: hack to avoid linkers to remove not referenced symbols. required because of
 	# http://springrts.com/mantis/view.php?id=4511
 	if(APPLE)
-		MakeGlobalVar(SPRING_SIM_LIBRARIES "-Wl,-force_load ${SPRING_SIM_LIBRARIES}")
+		MakeGlobalVar(SPRING_SIM_LIBRARIES "-Wl,-force_load" engineSim)
 	else()
-		MakeGlobalVar(SPRING_SIM_LIBRARIES "-Wl,-whole-archive ${SPRING_SIM_LIBRARIES} -Wl,-no-whole-archive")
+		MakeGlobalVar(SPRING_SIM_LIBRARIES "-Wl,-whole-archive" engineSim "-Wl,-no-whole-archive")
 	endif()
 else()
-	MakeGlobalVar(SPRING_SIM_LIBRARIES "${SPRING_SIM_LIBRARIES}")
+	MakeGlobalVar(SPRING_SIM_LIBRARIES engineSim)
 endif()

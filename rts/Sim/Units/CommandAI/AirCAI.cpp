@@ -109,6 +109,7 @@ void CAirCAI::GiveCommandReal(const Command& c, bool fromSynced)
 				case 1: { airMT->SetRepairBelowHealth(0.3f); break; }
 				case 2: { airMT->SetRepairBelowHealth(0.5f); break; }
 				case 3: { airMT->SetRepairBelowHealth(0.8f); break; }
+				default: { /*no op*/ } break;
 			}
 
 			for (unsigned int n = 0; n < possibleCommands.size(); n++) {
@@ -130,6 +131,7 @@ void CAirCAI::GiveCommandReal(const Command& c, bool fromSynced)
 			switch ((int) c.params[0]) {
 				case 0: { airMT->autoLand = false; break; }
 				case 1: { airMT->autoLand = true;  break; }
+				default: { /*no op*/ } break;
 			}
 
 			for (unsigned int n = 0; n < possibleCommands.size(); n++) {
@@ -398,7 +400,7 @@ void CAirCAI::ExecuteAttack(Command& c)
 	if (tempOrder && owner->moveState == MOVESTATE_MANEUVER) {
 		// limit how far away we fly
 		if (orderTarget && LinePointDist(commandPos1, commandPos2, orderTarget->pos) > 1500) {
-			owner->AttackUnit(NULL, false, false);
+			owner->DropCurrentAttackTarget();
 			FinishCommand();
 			return;
 		}
@@ -411,12 +413,12 @@ void CAirCAI::ExecuteAttack(Command& c)
 		}
 		if (orderTarget != NULL) {
 			if (orderTarget->unitDef->canfly && orderTarget->IsCrashing()) {
-				owner->AttackUnit(NULL, false, false);
+				owner->DropCurrentAttackTarget();
 				FinishCommand();
 				return;
 			}
 			if (!(c.options & ALT_KEY) && SkipParalyzeTarget(orderTarget)) {
-				owner->AttackUnit(NULL, false, false);
+				owner->DropCurrentAttackTarget();
 				FinishCommand();
 				return;
 			}

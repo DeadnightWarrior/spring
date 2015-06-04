@@ -6,8 +6,6 @@
 #include <boost/bind.hpp>
 #include <boost/format.hpp>
 #include <boost/version.hpp>
-#include <boost/ptr_container/ptr_deque.hpp>
-#include <boost/ptr_container/ptr_map.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/thread.hpp>
 #include <deque>
@@ -924,7 +922,7 @@ void CGameServer::LagProtection()
 		GameParticipant& player = players[a];
 		if (player.myState == GameParticipant::INGAME) {
 			// send info about the players
-			const int curPing = (serverFrameNum - player.lastFrameResponse);
+			const int curPing = ((serverFrameNum - player.lastFrameResponse) * 1000) / (GAME_SPEED * internalSpeed);
 			Broadcast(CBaseNetProtocol::Get().SendPlayerInfo(a, player.cpuUsage, curPing));
 
 			const float playerCpuUsage = player.cpuUsage;

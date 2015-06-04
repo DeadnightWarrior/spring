@@ -538,6 +538,9 @@ static int ColVolTable(lua_State* L, const void* data) {
 		case CollisionVolume::COLVOL_TYPE_BOX:
 			HSTR_PUSH_STRING(L, "type", "box");
 			break;
+		case CollisionVolume::COLVOL_TYPE_SPHERE:
+			HSTR_PUSH_STRING(L, "type", "sphere");
+			break;
 	}
 
 	LuaPushNamedNumber(L, "scaleX", cv->GetScales().x);
@@ -750,6 +753,7 @@ ADD_BOOL("canAttackWater",  canAttackWater); // CUSTOM
 	ADD_INT("selfDCountdown", ud.selfDCountdown);
 
 	ADD_FLOAT("speed",    ud.speed);
+	ADD_FLOAT("rSpeed",    ud.rSpeed);
 	ADD_FLOAT("turnRate", ud.turnRate);
 	ADD_BOOL("turnInPlace", ud.turnInPlace);
 	ADD_FLOAT("turnInPlaceSpeedLimit", ud.turnInPlaceSpeedLimit);
@@ -871,6 +875,7 @@ ADD_BOOL("canAttackWater",  canAttackWater); // CUSTOM
 	ADD_FLOAT("maxAileron",  ud.maxAileron);
 	ADD_FLOAT("maxElevator", ud.maxElevator);
 	ADD_FLOAT("maxRudder",   ud.maxRudder);
+	ADD_FLOAT("attackSafetyDistance", ud.attackSafetyDistance);
 
 	ADD_FLOAT("maxFuel",    ud.maxFuel);
 	ADD_FLOAT("refuelTime", ud.refuelTime);
